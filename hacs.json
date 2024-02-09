@@ -6,4 +6,6 @@
   "persistent_directory": "userfiles",
   "render_readme": true,
   "iot_class": ["Assumed State", "Cloud Push"]
+  "zip_release": true,
+  "filename": "smsto.zip"
 }
