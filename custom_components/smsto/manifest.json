@@ -1,7 +1,7 @@
 {
   "domain": "smsto",
   "name": "SMS notification service through SMS.to",
-  "documentation": "https://github.com/cnecrea/smsto",
+  "documentation": "https://github.com/cnecrea/hass-smsto",
   "dependencies" : [],
   "codeowners": ["@cnecrea"],
   "requirements": [],
