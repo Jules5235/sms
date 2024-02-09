@@ -23,6 +23,7 @@ Edit your home assistant configuration.yaml and add:
 notify:
   - platform: smsto
     name: SMSto
+    sender: HAOS
     api_key: your_api_key
     recipient: +1XXXXXXXXXX
 ```
@@ -30,6 +31,7 @@ Or edit your home assistant notify.yaml and add:
 ```yaml
 - platform: smsto
   name: SMSto
+  sender: HAOS
   api_key: your_api_key
   recipient: +1XXXXXXXXXX
 ```
