@@ -6,7 +6,7 @@ In order to use this integration you need to create an account on [SMS.to](https
 
 ## Install via HACS (recommended)
 
-Go to HACS -> custom repository (upper right corner) -> enter this repository URL https://github.com/cnecrea/smsto
+Go to HACS -> custom repository (upper right corner) -> enter this repository URL https://github.com/cnecrea/hass-smsto
 
 Click on "SMS notification service through SMS.to" -> Install this repository in HACS
 
