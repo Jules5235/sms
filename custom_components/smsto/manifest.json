@@ -1,0 +1,9 @@
+{
+  "domain": "smsto",
+  "name": "SMS notification service through SMS.to",
+  "documentation": "https://github.com/cnecrea/smsto",
+  "dependencies" : [],
+  "codeowners": ["@cnecrea"],
+  "requirements": [],
+  "version": "1.0.1"
+}
