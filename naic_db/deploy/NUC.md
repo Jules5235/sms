@@ -1,15 +1,42 @@
 # NAIC-database opzetten op je NUC7i5
 
-Stappenplan voor een Intel NUC (of vergelijkbare thuisserver) met **Ubuntu/Debian Linux**.
+Stappenplan voor een Intel NUC (of vergelijkbare thuisserver) met **Ubuntu 22.04 LTS**.
+
+## Ubuntu 22.04 LTS — snelstart
+
+Op je NUC (lokaal of via SSH):
+
+```bash
+# Optioneel: systeem bijwerken
+sudo apt update && sudo apt upgrade -y
+
+# Installeren (één commando)
+curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh -o /tmp/naic-install.sh \
+  && chmod +x /tmp/naic-install.sh \
+  && INSTALL_DIR=$HOME/naic_db /tmp/naic-install.sh
+```
+
+Bij de vraag over de systemd-timer: antwoord **`j`** voor wekelijkse automatische update (zaterdag 07:00).
+
+Controle:
+
+```bash
+cd ~/naic_db
+.venv/bin/python query_ranking.py --index AEX
+sqlite3 data/naic_eu.db "SELECT COUNT(*) FROM naic_scores;"
+# Verwacht: 45
+```
+
+Ubuntu 22.04 levert Python **3.10** mee — dat is voldoende voor dit project.
 
 ## Vereisten
 
-| Component | Minimum | Jouw NUC7i5 |
-|-----------|---------|-------------|
+| Component | Minimum | NUC7i5 + Ubuntu 22.04 |
+|-----------|---------|------------------------|
 | RAM | 1 GB vrij | Ruim voldoende (typisch 8–16 GB) |
 | Opslag | ~500 MB | Geen probleem |
 | Netwerk | Internet voor Yahoo/Stooq | Vereist |
-| OS | Linux met Python 3.10+ | Ubuntu 22.04/24.04 aanbevolen |
+| Python | 3.10+ | 3.10 (standaard op 22.04) |
 
 ## Optie A — Automatische installatie (aanbevolen)
 
