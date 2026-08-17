@@ -54,6 +54,18 @@ python query_ranking.py --index BEL20
 
 Database wordt opgeslagen in `data/naic_eu.db`.
 
+## Installatie op NUC / thuisserver
+
+Zie **[deploy/NUC.md](deploy/NUC.md)** voor een volledig stappenplan.
+
+Snelstart op Ubuntu/Debian:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh -o /tmp/naic-install.sh
+chmod +x /tmp/naic-install.sh
+INSTALL_DIR=$HOME/naic_db /tmp/naic-install.sh
+```
+
 ## Databronnen per veld
 
 | Veld | Bron | Opmerking |

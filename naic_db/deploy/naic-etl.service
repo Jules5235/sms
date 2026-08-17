@@ -1,0 +1,13 @@
+[Unit]
+Description=NAIC EU stocks ETL (AEX + BEL20)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Pas User en paden aan naar jouw installatie
+User=%i
+WorkingDirectory=/home/%i/naic_db
+ExecStart=/home/%i/naic_db/.venv/bin/python /home/%i/naic_db/run_etl.py
+StandardOutput=journal
+StandardError=journal
