@@ -1,0 +1,58 @@
+# AEX + BEL 20 universe — handmatig bijgewerkt (bron: Euronext, maart/juni 2026)
+# Yahoo-suffixen: .AS (Amsterdam), .BR (Brussel), .PA (Parijs)
+
+indices:
+  AEX:
+    exchange: AMS
+    description: "AEX — 30 grootste Nederlandse aandelen"
+    members:
+      - { ticker: ABN,   name: "ABN AMRO",              yahoo: ABN.AS,   stooq: abn.nl,   weight: 2.44 }
+      - { ticker: AD,    name: "Ahold Delhaize",        yahoo: AD.AS,    stooq: ad.nl,    weight: 3.34 }
+      - { ticker: ADYEN, name: "Adyen",                 yahoo: ADYEN.AS, stooq: adyen.nl, weight: 2.75 }
+      - { ticker: AGN,   name: "Aegon",                 yahoo: AGN.AS,   stooq: agn.nl,   weight: null }
+      - { ticker: AKZA,  name: "AkzoNobel",             yahoo: AKZA.AS,  stooq: akza.nl,  weight: null }
+      - { ticker: ASM,   name: "ASM International",       yahoo: ASM.AS,   stooq: asm.nl,   weight: 5.25 }
+      - { ticker: ASML,  name: "ASML Holding",          yahoo: ASML.AS,  stooq: asml.nl,  weight: 15.63 }
+      - { ticker: ASRNL, name: "ASR Nederland",         yahoo: ASRNL.AS, stooq: asrnl.nl, weight: 1.03 }
+      - { ticker: BESI,  name: "BE Semiconductor",        yahoo: BESI.AS,  stooq: besi.nl,  weight: 2.23 }
+      - { ticker: DSFIR, name: "DSM-Firmenich",          yahoo: DSFIR.AS, stooq: dsfir.nl, weight: 1.76 }
+      - { ticker: EXO,   name: "Exor",                  yahoo: EXO.AS,   stooq: exo.nl,   weight: null }
+      - { ticker: HEIA,  name: "Heineken",              yahoo: HEIA.AS,  stooq: heia.nl,  weight: 2.25 }
+      - { ticker: IMCD,  name: "IMCD",                  yahoo: IMCD.AS,  stooq: imcd.nl,  weight: null }
+      - { ticker: INGA,  name: "ING Groep",             yahoo: INGA.AS,  stooq: inga.nl,  weight: 8.60 }
+      - { ticker: KPN,   name: "KPN",                   yahoo: KPN.AS,   stooq: kpn.nl,   weight: 1.76 }
+      - { ticker: MT,    name: "ArcelorMittal",         yahoo: MT.AS,    stooq: mt.nl,    weight: 2.39 }
+      - { ticker: NN,    name: "NN Group",              yahoo: NN.AS,    stooq: nn.nl,    weight: 2.14 }
+      - { ticker: PHIA,  name: "Philips",               yahoo: PHIA.AS,  stooq: phia.nl,  weight: 1.95 }
+      - { ticker: PRX,   name: "Prosus",                yahoo: PRX.AS,   stooq: prx.nl,   weight: 4.81 }
+      - { ticker: RAND,  name: "Randstad",              yahoo: RAND.AS,  stooq: rand.nl,  weight: null }
+      - { ticker: REN,   name: "RELX",                  yahoo: REN.AS,   stooq: ren.nl,   weight: 5.36 }
+      - { ticker: SHELL, name: "Shell",                 yahoo: SHELL.AS, stooq: shell.nl, weight: 14.60 }
+      - { ticker: UMG,   name: "Universal Music Group", yahoo: UMG.AS,   stooq: umg.nl,   weight: 2.15 }
+      - { ticker: UNA,   name: "Unilever",              yahoo: UNA.AS,   stooq: una.nl,   weight: 12.24 }
+      - { ticker: WKL,   name: "Wolters Kluwer",        yahoo: WKL.AS,   stooq: wkl.nl,   weight: 1.40 }
+
+  BEL20:
+    exchange: BRU
+    description: "BEL 20 — 20 grootste Belgische aandelen"
+    members:
+      - { ticker: ABI,   name: "AB InBev",              yahoo: ABI.BR,   stooq: abi.be,   weight: 11.75 }
+      - { ticker: ACKB,  name: "Ackermans & van Haaren", yahoo: ACKB.BR, stooq: ackb.be,  weight: 4.62 }
+      - { ticker: AED,   name: "Aedifica",              yahoo: AED.BR,   stooq: aed.be,   weight: 5.25 }
+      - { ticker: AGS,   name: "Ageas",                 yahoo: AGS.BR,   stooq: ags.be,   weight: 8.19 }
+      - { ticker: APAM,  name: "Aperam",                yahoo: APAM.AS,  stooq: apam.nl,  weight: 1.22 }
+      - { ticker: ARGX,  name: "arGEN-X",               yahoo: ARGX.BR,  stooq: argx.be,  weight: 12.56 }
+      - { ticker: AZE,   name: "Azelis Group",          yahoo: AZE.BR,   stooq: aze.be,   weight: 1.47 }
+      - { ticker: DIE,   name: "D'Ieteren",             yahoo: DIE.BR,   stooq: die.be,   weight: 2.77 }
+      - { ticker: ELI,   name: "Elia Group",            yahoo: ELI.BR,   stooq: eli.be,   weight: 5.28 }
+      - { ticker: GBLB,  name: "GBL",                   yahoo: GBLB.BR,  stooq: gblb.be,  weight: 4.65 }
+      - { ticker: KBC,   name: "KBC Group",             yahoo: KBC.BR,   stooq: kbc.be,   weight: 11.72 }
+      - { ticker: LOTB,  name: "Lotus Bakeries",        yahoo: LOTB.BR,  stooq: lotb.be,  weight: 3.24 }
+      - { ticker: MELE,  name: "Melexis",               yahoo: MELE.BR,  stooq: mele.be,  weight: 1.20 }
+      - { ticker: MONT,  name: "Montea",                yahoo: MONT.BR,  stooq: mont.be,  weight: 1.12 }
+      - { ticker: SOF,   name: "Sofina",                yahoo: SOF.BR,   stooq: sof.be,   weight: 2.49 }
+      - { ticker: SOLB,  name: "Solvay",                yahoo: SOLB.BR,  stooq: solb.be,  weight: 1.49 }
+      - { ticker: SYENS, name: "Syensqo",               yahoo: SYENS.BR, stooq: syens.be, weight: 2.94 }
+      - { ticker: UCB,   name: "UCB",                   yahoo: UCB.BR,   stooq: ucb.be,   weight: 12.36 }
+      - { ticker: UMI,   name: "Umicore",               yahoo: UMI.BR,   stooq: umi.be,   weight: 2.60 }
+      - { ticker: WDP,   name: "WDP",                   yahoo: WDP.BR,   stooq: wdp.be,   weight: 3.43 }
