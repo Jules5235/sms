@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import os
 import sqlite3
 from pathlib import Path
 
-DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "naic_eu.db"
-SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schema.sql"
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_DEFAULT_DATA_DIR = Path(os.environ.get("NAIC_DATA_DIR", _PROJECT_ROOT / "data"))
+DEFAULT_DB_PATH = Path(os.environ.get("NAIC_DB_PATH", _DEFAULT_DATA_DIR / "naic_eu.db"))
+SCHEMA_PATH = _PROJECT_ROOT / "schema.sql"
 
 
 def connect(db_path: Path | str | None = None) -> sqlite3.Connection:

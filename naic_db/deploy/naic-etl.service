@@ -1,13 +1,17 @@
 [Unit]
 Description=NAIC EU stocks ETL (AEX + BEL20)
-After=network-online.target
+After=network-online.target mnt-p.mount
 Wants=network-online.target
 
 [Service]
 Type=oneshot
-# Pas User en paden aan naar jouw installatie
-User=%i
-WorkingDirectory=/home/%i/naic_db
-ExecStart=/home/%i/naic_db/.venv/bin/python /home/%i/naic_db/run_etl.py
-StandardOutput=journal
-StandardError=journal
+User=jules
+WorkingDirectory=/mnt/p/Jules/Apps/NAIC
+Environment=NAIC_DB_PATH=/mnt/p/Jules/Apps/NAIC/data/naic_eu.db
+Environment=NAIC_DATA_DIR=/mnt/p/Jules/Apps/NAIC/data
+ExecStart=/mnt/p/Jules/Apps/NAIC/.venv/bin/python /mnt/p/Jules/Apps/NAIC/run_etl.py
+StandardOutput=append:/mnt/p/Jules/Apps/NAIC/logs/etl-systemd.log
+StandardError=append:/mnt/p/Jules/Apps/NAIC/logs/etl-systemd.log
+
+[Install]
+WantedBy=multi-user.target

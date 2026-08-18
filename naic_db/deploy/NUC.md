@@ -1,169 +1,153 @@
-# NAIC-database opzetten op je NUC7i5
+# NAIC-database op NUC6i5 (TPCtoss.nl patroon)
 
-Stappenplan voor een Intel NUC (of vergelijkbare thuisserver) met **Ubuntu 22.04 LTS**.
+Deployment naar **NUC6i5** — Ubuntu 22.04 LTS op `192.168.178.79`, login `jules`.
 
-## Ubuntu 22.04 LTS — snelstart
+## Padstructuur (zelfde als TPCtoss)
 
-Op je NUC (lokaal of via SSH):
+| Omgeving | Pad |
+|----------|-----|
+| Windows | `P:\Jules\Apps\NAIC` |
+| Ubuntu (NUC6i5) | `/mnt/p/Jules/Apps/NAIC` |
 
-```bash
-# Optioneel: systeem bijwerken
-sudo apt update && sudo apt upgrade -y
-
-# Installeren (één commando)
-curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh -o /tmp/naic-install.sh \
-  && chmod +x /tmp/naic-install.sh \
-  && INSTALL_DIR=$HOME/naic_db /tmp/naic-install.sh
+```
+/mnt/p/Jules/Apps/NAIC/          ← P:/Jules/Apps/NAIC
+├── run_etl.py
+├── query_ranking.py
+├── schema.sql
+├── config/universes.yaml
+├── naic_db/                     ← Python-pakket
+├── deploy/
+│   └── nuc6i5.env               ← omgevingsconfig
+├── .venv/                       ← Python virtual environment
+├── data/
+│   └── naic_eu.db               ← SQLite-database
+└── logs/
+    ├── etl-YYYYMMDD-HHMMSS.log
+    └── etl-systemd.log
 ```
 
-Bij de vraag over de systemd-timer: antwoord **`j`** voor wekelijkse automatische update (zaterdag 07:00).
+## Optie A — Deploy vanaf je laptop (aanbevolen)
 
-Controle:
+Op je Windows-PC (met SSH-toegang tot de NUC):
 
 ```bash
-cd ~/naic_db
-.venv/bin/python query_ranking.py --index AEX
-sqlite3 data/naic_eu.db "SELECT COUNT(*) FROM naic_scores;"
-# Verwacht: 45
+# Eenmalig: SSH-key instellen (als nog niet gedaan)
+ssh-copy-id jules@192.168.178.79
+
+# Clone repo (eenmalig)
+git clone --branch cursor/eu-naic-database-poc-d9c0 https://github.com/Jules5235/sms.git
+cd sms/naic_db/deploy
+
+# Deploy naar NUC6i5
+chmod +x deploy-remote.sh install.sh
+./deploy-remote.sh
 ```
 
-Ubuntu 22.04 levert Python **3.10** mee — dat is voldoende voor dit project.
+## Optie B — Direct op de NUC6i5
 
-## Vereisten
+SSH naar de NUC:
 
-| Component | Minimum | NUC7i5 + Ubuntu 22.04 |
-|-----------|---------|------------------------|
-| RAM | 1 GB vrij | Ruim voldoende (typisch 8–16 GB) |
-| Opslag | ~500 MB | Geen probleem |
-| Netwerk | Internet voor Yahoo/Stooq | Vereist |
-| Python | 3.10+ | 3.10 (standaard op 22.04) |
+```bash
+ssh jules@192.168.178.79
+```
 
-## Optie A — Automatische installatie (aanbevolen)
+Controleer eerst of P:-schijf gemount is:
 
-SSH naar je NUC en voer uit:
+```bash
+mountpoint /mnt/p && ls /mnt/p/Jules/Apps/
+```
+
+Installatie:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh -o /tmp/naic-install.sh
 chmod +x /tmp/naic-install.sh
-INSTALL_DIR=$HOME/naic_db /tmp/naic-install.sh
+sudo /tmp/naic-install.sh   # of zonder sudo als /mnt/p schrijfbaar is voor jules
 ```
 
-Het script doet het volgende:
-1. Installeert `python3-venv`, `git`, `sqlite3`
-2. Clone de repository naar `~/naic_db`
-3. Maakt een Python virtual environment aan
-4. Draait de eerste ETL (~1–2 minuten)
-5. Vraagt of je een wekelijkse systemd-timer wilt (zaterdag 07:00)
+> Het install-script verwacht dat `/mnt/p` de P:-schijf is. Als TPCtoss al draait, is deze mount waarschijnlijk al correct ingesteld.
 
-### Aangepaste installatielocatie
+## P:-schijf mount (indien nog niet aanwezig)
+
+Als `/mnt/p` nog niet bestaat, voeg toe aan `/etc/fstab` (zelfde als TPCtoss):
 
 ```bash
-INSTALL_DIR=/opt/naic_db INSTALL_SYSTEMD=yes /tmp/naic-install.sh
+sudo mkdir -p /mnt/p
+# Voorbeeld — pas aan naar jouw NAS/share:
+# //192.168.178.x/share /mnt/p cifs credentials=/home/jules/.smbcredentials,uid=jules,gid=jules,iocharset=utf8 0 0
+sudo mount -a
 ```
 
-## Optie B — Handmatige installatie
+Vraag: controleer op de NUC waar TPCtoss staat:
 
 ```bash
-# 1. Systeempakketten
-sudo apt update
-sudo apt install -y python3 python3-venv python3-pip git sqlite3
-
-# 2. Code ophalen
-git clone --branch cursor/eu-naic-database-poc-d9c0 \
-  https://github.com/Jules5235/sms.git /tmp/sms
-cp -r /tmp/sms/naic_db ~/naic_db
-cd ~/naic_db
-
-# 3. Python-omgeving
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# 4. Database vullen
-python run_etl.py
-
-# 5. Resultaat bekijken
-python query_ranking.py --index AEX
+ls -la /mnt/p/Jules/Apps/
 ```
-
-## Wekelijkse automatische update
-
-Na installatie met systemd:
-
-```bash
-# Status timer
-systemctl list-timers naic-etl.timer
-
-# Handmatig nu draaien
-systemctl start naic-etl.service
-
-# Logs bekijken
-journalctl -u naic-etl.service -f
-```
-
-Zonder systemd (cron):
-
-```bash
-crontab -e
-# Voeg toe:
-0 7 * * 6  /home/jouwgebruiker/naic_db/.venv/bin/python /home/jouwgebruiker/naic_db/run_etl.py >> /home/jouwgebruiker/naic_db/data/etl.log 2>&1
-```
-
-## Database benaderen vanaf andere apparaten
-
-De SQLite-database staat op:
-```
-~/naic_db/data/naic_eu.db
-```
-
-### Optie 1 — SSH + sqlite3 (eenvoudigst)
-
-Vanaf je laptop:
-```bash
-ssh gebruiker@nuc-ip "sqlite3 ~/naic_db/data/naic_eu.db 'SELECT ticker, advice, win_loss_ratio FROM v_naic_ranking WHERE index_code=\"AEX\" LIMIT 10;'"
-```
-
-### Optie 2 — Samba/NFS share
-
-Deel de map `~/naic_db/data/` via Samba zodat je de database vanaf Windows/Mac kunt openen met DB Browser for SQLite.
-
-### Optie 3 — Later: PostgreSQL + web-UI
-
-Voor meerdere gebruikers of een dashboard is PostgreSQL een logische volgende stap (nog niet in deze PoC).
 
 ## Controle na installatie
 
-```bash
-cd ~/naic_db
+Op de NUC:
 
-# Aantal records
+```bash
+cd /mnt/p/Jules/Apps/NAIC
+
+# Ranking bekijken
+NAIC_DB_PATH=/mnt/p/Jules/Apps/NAIC/data/naic_eu.db \
+  .venv/bin/python query_ranking.py --index AEX
+
+# Record-telling
 sqlite3 data/naic_eu.db "
   SELECT 'instrumenten', COUNT(*) FROM instruments
   UNION ALL SELECT 'koersen', COUNT(*) FROM price_daily
-  UNION ALL SELECT 'fundamenten', COUNT(*) FROM fundamentals_annual
   UNION ALL SELECT 'naic_scores', COUNT(*) FROM naic_scores;
 "
+# Verwacht: 45 / ~120000 / 45
+```
 
-# Verwacht: ~45 instrumenten, ~120k koersen, ~210 fundamenten, 45 scores
+Vanaf je laptop:
+
+```bash
+ssh jules@192.168.178.79 "sqlite3 /mnt/p/Jules/Apps/NAIC/data/naic_eu.db 'SELECT ticker, advice FROM v_naic_ranking WHERE index_code=\"AEX\" LIMIT 5;'"
+```
+
+## Automatische updates
+
+Systemd-timer (zaterdag 07:00):
+
+```bash
+systemctl list-timers naic-etl.timer
+systemctl start naic-etl.service          # handmatig nu draaien
+tail -f /mnt/p/Jules/Apps/NAIC/logs/etl-systemd.log
+```
+
+## Configuratie aanpassen
+
+Bestand: `/mnt/p/Jules/Apps/NAIC/deploy/nuc6i5.env`
+
+```bash
+NUC_HOST=192.168.178.79
+NUC_USER=jules
+APP_DIR=/mnt/p/Jules/Apps/NAIC
+DB_FILE=/mnt/p/Jules/Apps/NAIC/data/naic_eu.db
 ```
 
 ## Probleemoplossing
 
 | Probleem | Oplossing |
 |----------|-----------|
-| `python3-venv` niet gevonden | `sudo apt install python3-venv` |
-| Yahoo timeout / lege data | Later opnieuw draaien: `python run_etl.py` |
-| Stooq daglimiet | Wacht 24 uur of gebruik alleen Yahoo |
-| Permission denied op data/ | `chmod 755 ~/naic_db/data` |
-| Git branch niet gevonden | Controleer of PR #1 is gemerged; pas `BRANCH` aan in install.sh |
+| `/mnt/p` niet gemount | `sudo mount -a` of herstart NUC; check fstab |
+| Permission denied op `/mnt/p/Jules/Apps/NAIC` | `sudo chown -R jules:jules /mnt/p/Jules/Apps/NAIC` |
+| SSH geweigerd | `ssh jules@192.168.178.79` testen; check firewall |
+| Yahoo timeout | Later opnieuw: `NAIC_DB_PATH=... .venv/bin/python run_etl.py` |
+| TPCtoss-pad anders | Pas `APP_DIR` aan in `deploy/nuc6i5.env` |
 
-## Home Assistant OS?
+## Servergegevens
 
-Als je NUC Home Assistant OS draait (geen volledige Linux-shell), installeer de database op een **aparte machine/VM** of gebruik de **HA Terminal & SSH add-on** met beperkte mogelijkheden. Een dedicated Ubuntu-installatie op de NUC is het eenvoudigst.
-
-## Volgende stap
-
-Zodra de database draait op je NUC, kun je:
-- ESEF/XBRL toevoegen voor betere fundamenten
-- Een eenvoudig webdashboard koppelen
-- Alerts instellen bij koopadvies (K)
+| Item | Waarde |
+|------|--------|
+| Machine | Intel NUC6i5 |
+| OS | Ubuntu 22.04 LTS |
+| IP | 192.168.178.79 |
+| Gebruiker | jules |
+| App-pad | `/mnt/p/Jules/Apps/NAIC` |
+| Database | `/mnt/p/Jules/Apps/NAIC/data/naic_eu.db` |

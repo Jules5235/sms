@@ -52,18 +52,33 @@ python query_ranking.py --index AEX
 python query_ranking.py --index BEL20
 ```
 
-Database wordt opgeslagen in `data/naic_eu.db`.
+Database wordt opgeslagen in `data/naic_eu.db` (lokaal) of `/mnt/p/Jules/Apps/NAIC/data/naic_eu.db` (NUC6i5).
 
-## Installatie op NUC / thuisserver
+Omgevingsvariabelen:
 
-Zie **[deploy/NUC.md](deploy/NUC.md)** voor een volledig stappenplan.
+| Variabele | Default | Productie (NUC6i5) |
+|-----------|---------|---------------------|
+| `NAIC_DATA_DIR` | `./data` | `/mnt/p/Jules/Apps/NAIC/data` |
+| `NAIC_DB_PATH` | `./data/naic_eu.db` | `/mnt/p/Jules/Apps/NAIC/data/naic_eu.db` |
 
-Snelstart op Ubuntu/Debian:
+## Installatie op NUC6i5 (TPCtoss-patroon)
+
+App + database op **P:/Jules/Apps/NAIC** → `/mnt/p/Jules/Apps/NAIC`
+
+Zie **[deploy/NUC.md](deploy/NUC.md)** voor het volledige stappenplan.
+
+Deploy vanaf je laptop:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh -o /tmp/naic-install.sh
-chmod +x /tmp/naic-install.sh
-INSTALL_DIR=$HOME/naic_db /tmp/naic-install.sh
+cd naic_db/deploy
+chmod +x deploy-remote.sh
+./deploy-remote.sh
+```
+
+Direct op de NUC (`jules@192.168.178.79`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Jules5235/sms/cursor/eu-naic-database-poc-d9c0/naic_db/deploy/install.sh | bash
 ```
 
 ## Databronnen per veld
