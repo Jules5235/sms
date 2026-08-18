@@ -1,0 +1,15 @@
+[Unit]
+Description=NAIC EU stocks ETL (AEX + BEL20)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=jules
+WorkingDirectory=/home/jules/naic
+Environment=NAIC_APP_DIR=/home/jules/naic
+Environment=NAIC_DB_PATH=/home/jules/naic/data/naic_eu.db
+Environment=NAIC_DATA_DIR=/home/jules/naic/data
+ExecStart=/home/jules/naic/.venv/bin/naic-etl
+StandardOutput=append:/home/jules/naic/logs/etl-systemd.log
+StandardError=append:/home/jules/naic/logs/etl-systemd.log

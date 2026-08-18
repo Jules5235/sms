@@ -1,0 +1,20 @@
+[Unit]
+Description=NAIC EU REST API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=jules
+WorkingDirectory=/home/jules/naic
+Environment=NAIC_APP_DIR=/home/jules/naic
+Environment=NAIC_DB_PATH=/home/jules/naic/data/naic_eu.db
+Environment=NAIC_DATA_DIR=/home/jules/naic/data
+Environment=NAIC_API_HOST=0.0.0.0
+Environment=NAIC_API_PORT=8080
+ExecStart=/home/jules/naic/.venv/bin/naic-api
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

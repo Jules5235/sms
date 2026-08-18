@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "naic-eu"
+version = "0.1.0"
+description = "NAIC EU stocks database — AEX + BEL 20 (lokaal pakket)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "yfinance>=0.2.40",
+    "pandas>=2.0.0",
+    "pyyaml>=6.0",
+    "requests>=2.31.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+]
+
+[project.scripts]
+naic-etl = "naic_eu.etl:main"
+naic-ranking = "naic_eu.ranking:main"
+naic-api = "naic_eu.api:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["naic_eu*"]

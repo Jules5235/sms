@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NAIC EU</string>
+    <string name="tab_aex">AEX</string>
+    <string name="tab_bel20">BEL 20</string>
+    <string name="tab_all">Alles</string>
+    <string name="zone_koop">Koop (K)</string>
+    <string name="zone_neutraal">Neutraal (n)</string>
+    <string name="zone_vermijden">Vermijden (v)</string>
+    <string name="settings_title">Instellingen</string>
+    <string name="settings_api_url">API-basis-URL</string>
+    <string name="settings_save">Opslaan</string>
+    <string name="error_connection">Geen verbinding met NAIC-server</string>
+    <string name="retry">Opnieuw</string>
+    <string name="loading">Laden…</string>
+    <string name="price_chart_title">Koers (1 jaar)</string>
+    <string name="fundamentals_title">Fundamenten</string>
+    <string name="naic_title">NAIC-analyse</string>
+</resources>
