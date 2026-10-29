@@ -26,6 +26,7 @@ Na deploy draait de API op je NUC:
 | http://192.168.178.79:8081/health | Status |
 | http://192.168.178.79:8081/docs | Swagger UI |
 | http://192.168.178.79:8081/api/ranking/AEX | AEX-ranking JSON |
+| http://192.168.178.79:8081/fonds/ASML | Fondsdetail (afdruk / PDF) |
 
 Zie **[docs/API.md](docs/API.md)** voor alle endpoints.
 
