@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import os
 import sqlite3
+from datetime import datetime, timezone
 from typing import Any, Generator
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from naic_eu.paths import DEFAULT_DB_PATH
+from naic_eu.web_detail import render_fonds_detail_page
 
 API_HOST = os.environ.get("NAIC_API_HOST", "0.0.0.0")
 API_PORT = int(os.environ.get("NAIC_API_PORT", "8080"))
@@ -135,6 +138,16 @@ def instruments(
 
 @app.get("/api/instruments/{ticker}")
 def instrument_detail(ticker: str, conn: sqlite3.Connection = Depends(get_db)) -> dict[str, Any]:
+    payload = _fonds_detail_payload(ticker, conn)
+    return {
+        "instrument": payload["instrument"],
+        "naic_score": payload["naic_score"],
+        "fundamentals": payload["fundamentals"],
+    }
+
+
+def _fonds_detail_payload(ticker: str, conn: sqlite3.Connection) -> dict[str, Any]:
+    upper = ticker.upper()
     inst = fetch_one(
         conn,
         """
@@ -144,7 +157,7 @@ def instrument_detail(ticker: str, conn: sqlite3.Connection = Depends(get_db)) -
         WHERE i.ticker = ?
         LIMIT 1
         """,
-        (ticker.upper(),),
+        (upper,),
     )
     if not inst:
         raise HTTPException(status_code=404, detail=f"Instrument {ticker} niet gevonden")
@@ -156,7 +169,7 @@ def instrument_detail(ticker: str, conn: sqlite3.Connection = Depends(get_db)) -
         WHERE instrument_id = (SELECT id FROM instruments WHERE ticker = ? LIMIT 1)
         ORDER BY as_of_date DESC LIMIT 1
         """,
-        (ticker.upper(),),
+        (upper,),
     )
     fundamentals = fetch_all(
         conn,
@@ -166,9 +179,39 @@ def instrument_detail(ticker: str, conn: sqlite3.Connection = Depends(get_db)) -
         WHERE instrument_id = (SELECT id FROM instruments WHERE ticker = ? LIMIT 1)
         ORDER BY fiscal_year DESC LIMIT 10
         """,
-        (ticker.upper(),),
+        (upper,),
     )
-    return {"instrument": inst, "naic_score": score, "fundamentals": fundamentals}
+    prices = fetch_all(
+        conn,
+        """
+        SELECT trade_date, open, high, low, close, adj_close, volume
+        FROM price_daily
+        WHERE instrument_id = (SELECT id FROM instruments WHERE ticker = ? LIMIT 1)
+        ORDER BY trade_date DESC LIMIT 365
+        """,
+        (upper,),
+    )
+    return {
+        "instrument": inst,
+        "naic_score": score,
+        "fundamentals": fundamentals,
+        "prices": prices,
+    }
+
+
+@app.get("/fonds/{ticker}", response_class=HTMLResponse)
+def fonds_detail_page(ticker: str, conn: sqlite3.Connection = Depends(get_db)) -> HTMLResponse:
+    """Fondsdetailpagina met afdrukken / opslaan als PDF (browser)."""
+    payload = _fonds_detail_payload(ticker, conn)
+    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    html = render_fonds_detail_page(
+        instrument=payload["instrument"],
+        score=payload["naic_score"],
+        fundamentals=payload["fundamentals"],
+        prices=payload["prices"],
+        generated_at=generated,
+    )
+    return HTMLResponse(content=html)
 
 
 @app.get("/api/instruments/{ticker}/prices")

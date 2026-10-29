@@ -16,4 +16,6 @@
     <string name="price_chart_title">Koers (1 jaar)</string>
     <string name="fundamentals_title">Fundamenten</string>
     <string name="naic_title">NAIC-analyse</string>
+    <string name="print_page">Afdrukken / PDF</string>
+    <string name="print_page_content_description">Pagina afdrukken of opslaan als PDF</string>
 </resources>

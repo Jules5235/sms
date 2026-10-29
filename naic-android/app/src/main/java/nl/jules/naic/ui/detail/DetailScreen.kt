@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Print
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ fun DetailScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val instrument = uiState.instrument
     val score = uiState.naicScore
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -54,6 +57,26 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Terug")
+                    }
+                },
+                actions = {
+                    if (instrument != null && !uiState.isLoading && uiState.error == null) {
+                        IconButton(
+                            onClick = {
+                                printFondsDetail(
+                                    context = context,
+                                    instrument = instrument,
+                                    score = score,
+                                    fundamentals = uiState.fundamentals,
+                                    prices = uiState.prices,
+                                )
+                            },
+                        ) {
+                            Icon(
+                                Icons.Filled.Print,
+                                contentDescription = stringResource(R.string.print_page_content_description),
+                            )
+                        }
                     }
                 },
             )

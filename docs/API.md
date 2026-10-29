@@ -15,6 +15,7 @@ Interactieve documentatie: **http://192.168.178.79:8081/docs**
 | GET | `/api/instruments` | Alle instrumenten (`?index=AEX`) |
 | GET | `/api/instruments/{ticker}` | Detail + NAIC-score + fundamenten |
 | GET | `/api/instruments/{ticker}/prices` | Koershistorie (`?limit=365`) |
+| GET | `/fonds/{ticker}` | **HTML fondsdetail** (afdrukken / PDF via browser) |
 
 ## Voorbeelden
 
